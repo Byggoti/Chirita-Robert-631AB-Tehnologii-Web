@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adaugă Carte</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(90deg, blue, purple);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background: #fff;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        input:focus, select:focus {
+            border-color: #ff6a00;
+            box-shadow: 0 0 5px #ff6a00;
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            background: #ff6a00;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: #ff3d00;
+        }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #ff6a00;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .back-btn:hover {
+            color: #ff3d00;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>Adaugă Carte</h1>
+        <form action="adauga_carte.php" method="post">
+            <input type="text" name="titlu" placeholder="Titlu Carte" required>
+            <input type="text" name="autor" placeholder="Nume Autor" required>
+            <input type="text" name="editura" placeholder="Editură" required>
+            <input type="number" name="pagini" placeholder="Număr Pagini" required>
+            <input type="number" name="an_publicatie" placeholder="An Publicație" required>
+            <button type="submit" class="btn">Adaugă Carte</button>
+        </form>
+        <a href="dashboard.php" class="back-btn">⬅ Înapoi la Dashboard</a>
+    </div>
+</body>
+</html>
