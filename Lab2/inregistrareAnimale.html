@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ro">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Formular de înregistrare animale</title>
+    <style>
+        :root{
+            --bg:#f3f6f9;
+            --card:#ffffff;
+            --accent:#2b8a3e;
+            --accent-dark:#216a30;
+            --muted:#6b7280;
+            --focus:rgba(43,138,62,0.18);
+            --gap:0.75rem;
+        }
+        html,body{
+            height:100%;
+            margin:0;
+            font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+            background:linear-gradient(180deg,var(--bg),#e9eef3);
+            color:#111827;
+        }
+
+        .page{
+            min-height:100vh;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            padding:2rem;
+        }
+
+        .form-card{
+            width:100%;
+            max-width:600px;
+            background:var(--card);
+            padding:1.5rem 1.75rem;
+            border-radius:10px;
+            box-shadow:0 8px 24px rgba(15,23,42,0.08);
+            box-sizing:border-box;
+        }
+
+        h1{
+            margin:0 0 0.5rem 0;
+            font-size:1.4rem;
+        }
+
+        p.lead{
+            margin:0 0 1rem 0;
+            color:var(--muted);
+            font-size:0.95rem;
+        }
+
+        form{
+            margin-top:0.5rem;
+        }
+
+        .field{
+            display:flex;
+            flex-direction:column;
+            gap:0.35rem;
+            margin-bottom:var(--gap);
+        }
+
+        label{
+            font-size:0.9rem;
+            color:#111827;
+        }
+
+        input[type="text"],
+        select,
+        textarea{
+            padding:0.55rem 0.65rem;
+            border:1px solid #d1d5db;
+            border-radius:8px;
+            font-size:0.95rem;
+            transition:all 0.18s ease;
+            outline:none;
+            box-sizing:border-box;
+        }
+
+        input[type="text"]:focus,
+        select:focus,
+        textarea:focus{
+            border-color:var(--accent);
+            box-shadow:0 4px 14px var(--focus);
+        }
+
+        .inline-group{
+            display:flex;
+            gap:var(--gap);
+            flex-wrap:wrap;
+        }
+
+        .inline-group .field{
+            flex:1 1 200px;
+            margin-bottom:0;
+        }
+
+        fieldset{
+            border:1px dashed #e5e7eb;
+            padding:0.6rem;
+            border-radius:8px;
+            margin-bottom:var(--gap);
+        }
+
+        fieldset legend{
+            padding:0 0.5rem;
+            font-size:0.9rem;
+            color:var(--muted);
+        }
+
+        .options{
+            display:flex;
+            gap:1rem;
+            flex-wrap:wrap;
+            align-items:center;
+        }
+
+        .options label{
+            display:flex;
+            align-items:center;
+            gap:0.4rem;
+            font-size:0.95rem;
+            color:#111827;
+        }
+
+        textarea{
+            min-height:100px;
+            resize:vertical;
+        }
+
+        .actions{
+            display:flex;
+            gap:0.75rem;
+            margin-top:0.5rem;
+            justify-content:flex-end;
+        }
+
+        .btn{
+            padding:0.6rem 0.9rem;
+            border-radius:8px;
+            border:1px solid transparent;
+            font-size:0.95rem;
+            cursor:pointer;
+            transition:all 0.15s ease;
+        }
+
+        .btn-submit{
+            background:var(--accent);
+            color:#fff;
+            border-color:transparent;
+        }
+
+        .btn-submit:hover{
+            background:var(--accent-dark);
+            transform:translateY(-1px);
+            box-shadow:0 6px 18px rgba(33,106,48,0.12);
+        }
+
+        .btn-reset{
+            background:#ffffff;
+            color:#374151;
+            border:1px solid #e5e7eb;
+        }
+
+        .btn-reset:hover{
+            background:#f8fafc;
+            transform:translateY(-1px);
+        }
+
+        @media (max-width:520px){
+            .actions{flex-direction:column-reverse; align-items:stretch;}
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <main class="form-card" role="main">
+            <h1>Formular de înregistrare animale</h1>
+            <p class="lead">Completează formularul de mai jos pentru a înregistra un animal la clinica veterinară. Datele ne ajută să oferim servicii adecvate și rapide.</p>
+
+            <form action="#" method="post" autocomplete="on">
+                <div class="inline-group">
+                    <div class="field">
+                        <label for="ownerName">Nume stăpân</label>
+                        <input id="ownerName" name="ownerName" type="text" placeholder="Ex: Ion Popescu" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="phone">Telefon</label>
+                        <input id="phone" name="phone" type="text" placeholder="Ex: 0712345678" required>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="petName">Nume animal</label>
+                    <input id="petName" name="petName" type="text" placeholder="Ex: Max" required>
+                </div>
+
+                <div class="inline-group">
+                    <div class="field">
+                        <label for="species">Specie</label>
+                        <select id="species" name="species" required>
+                            <option value="Caine">Câine</option>
+                            <option value="Pisica">Pisică</option>
+                            <option value="Iepure">Iepure</option>
+                            <option value="Altul">Altul</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Sexul animalului</label>
+                        <fieldset>
+                            <legend class="sr-only">Sex</legend>
+                            <div class="options" aria-label="Sex">
+                                <label><input type="radio" name="sex" value="Mascul" required> Mascul</label>
+                                <label><input type="radio" name="sex" value="Femela" required> Femelă</label>
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label>Servicii dorite</label>
+                    <fieldset>
+                        <legend class="sr-only">Servicii</legend>
+                        <div class="options">
+                            <label><input type="checkbox" name="services" value="Vaccinare"> Vaccinare</label>
+                            <label><input type="checkbox" name="services" value="Deparazitare"> Deparazitare</label>
+                            <label><input type="checkbox" name="services" value="Consult"> Consult</label>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="field">
+                    <label for="notes">Observații</label>
+                    <textarea id="notes" name="notes" placeholder="Informații relevante (boli, alergii, tratamente etc.)"></textarea>
+                </div>
+
+                <div class="actions">
+                    <button type="reset" class="btn btn-reset">Resetare</button>
+                    <button type="submit" class="btn btn-submit">Trimite</button>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+</html></div>
