@@ -1,26 +1,63 @@
 <?php
-$host = 'mariadb-container';
-$port = 3306;
-$user = 'root';
-$pass = 'admin';
-$dbname = 'Biblioteca';
+$servername = "localhost";
+$username = "root";
+$password = "admin";
+$dbname = "Biblioteca";
 
-$conn = new mysqli($host, $user, $pass, $dbname, $port);
-if ($conn->connect_error) die("❌ Conexiune eșuată: " . $conn->connect_error);
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Conexiune eșuată: " . $conn->connect_error);
+}
 
-$titlu = $_POST['titlu'];
-$id_autor = $_POST['id_autor'];
-$id_editura = $_POST['id_editura'];
-$pagini = $_POST['pagini'];
-$an_publicatie = $_POST['an_publicatie'];
-$data_inregistrare = date('Y-m-d');
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $titlu = trim($_POST['titlu']);
+    $autor = trim($_POST['autor']);
+    $editura = trim($_POST['editura']);
+    $pagini = intval($_POST['pagini']);
+    $an_publicatie = intval($_POST['an_publicatie']);
 
-$stmt = $conn->prepare("INSERT INTO Carti (id_autor, id_editura, titlu, pagini, an_publicatie, data_inregistrare) VALUES (?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("iisis", $id_autor, $id_editura, $titlu, $pagini, $an_publicatie, $data_inregistrare);
+    $sql_autor = "SELECT id FROM Autori WHERE nume = ?";
+    $stmt = $conn->prepare($sql_autor);
+    $stmt->bind_param("s", $autor);
+    $stmt->execute();
+    $result_autor = $stmt->get_result();
 
-if ($stmt->execute()) echo "✅ Cartea a fost adăugată!";
-else echo "❌ Eroare: " . $stmt->error;
+    if ($result_autor->num_rows > 0) {
+        $row = $result_autor->fetch_assoc();
+        $id_autor = $row['id'];
+    } else {
+        $conn->query("INSERT INTO Autori (nume) VALUES ('$autor')");
+        $id_autor = $conn->insert_id;
+    }
 
-$stmt->close();
+    // Verificăm dacă editura există
+    $sql_editura = "SELECT id FROM Editura WHERE nume = ?";
+    $stmt = $conn->prepare($sql_editura);
+    $stmt->bind_param("s", $editura);
+    $stmt->execute();
+    $result_editura = $stmt->get_result();
+
+    if ($result_editura->num_rows > 0) {
+        $row = $result_editura->fetch_assoc();
+        $id_editura = $row['id'];
+    } else {
+        $conn->query("INSERT INTO Editura (nume) VALUES ('$editura')");
+        $id_editura = $conn->insert_id;
+    }
+
+    $sql_insert = "INSERT INTO Carti (id_autor, id_editura, titlu, pagini, an_publicatie, data_inregistrare)
+                   VALUES (?, ?, ?, ?, ?, CURDATE())";
+    $stmt = $conn->prepare($sql_insert);
+    $stmt->bind_param("iisii", $id_autor, $id_editura, $titlu, $pagini, $an_publicatie);
+
+    if ($stmt->execute()) {
+        echo "<script>alert('✅ Cartea a fost adăugată cu succes!'); window.location.href='lista_carti.php';</script>";
+    } else {
+        echo "<script>alert('❌ Eroare la adăugarea cărții: " . addslashes($conn->error) . "'); window.history.back();</script>";
+    }
+
+    $stmt->close();
+}
+
 $conn->close();
 ?>

@@ -1,93 +1,240 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Adaugă Carte</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(90deg, blue, purple);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Adaugă Carte — Biblioteca</title>
+<style>
+  :root{
+    --bg1: #6a11cb;
+    --bg2: #2575fc;
+    --card: #ffffff;
+    --muted: #6b7280;
+    --accent: #ff7a59;
+    --accent-hover: #ff5722;
+    --radius: 12px;
+  }
+  *{box-sizing:border-box;font-family:Inter, system-ui, Arial, sans-serif}
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+    background: linear-gradient(135deg,var(--bg1),var(--bg2));
+  }
 
-        .form-container {
-            background: #fff;
-            padding: 40px 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 400px;
-        }
+  .wrapper{
+    width:100%;
+    max-width:920px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+    display:grid;
+    grid-template-columns: 1fr 420px;
+    gap:24px;
+    align-items:start;
+  }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #333;
-        }
+  .card {
+    background: var(--card);
+    border-radius:10px;
+    padding:20px;
+    color:#111827;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  }
 
-        input, select {
-            width: 100%;
-            padding: 12px 15px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            font-size: 16px;
-        }
+  .card h2{
+    margin:0 0 6px;
+    font-size:20px;
+    color:#0f172a;
+  }
+  .card p.lead{ margin:0 0 16px; color:var(--muted); font-size:14px; }
 
-        input:focus, select:focus {
-            border-color: #ff6a00;
-            box-shadow: 0 0 5px #ff6a00;
-            outline: none;
-        }
+  form{
+    display:grid;
+    gap:14px;
+    grid-template-columns: repeat(2, 1fr);
+  }
 
-        .btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 15px;
-            border: none;
-            border-radius: 8px;
-            background: #ff6a00;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
+  label{
+    font-size:13px;
+    color:#374151;
+    display:block;
+    margin-bottom:6px;
+    font-weight:600;
+  }
 
-        .btn:hover {
-            background: #ff3d00;
-        }
+  .full {
+    grid-column: 1 / -1;
+  }
 
-        .back-btn {
-            display: block;
-            text-align: center;
-            margin-top: 15px;
-            text-decoration: none;
-            color: #ff6a00;
-            font-weight: bold;
-            transition: color 0.3s ease;
-        }
+  input[type="text"],
+  input[type="number"],
+  select {
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #e6e9ef;
+    border-radius:10px;
+    font-size:15px;
+    color:#0b1220;
+    background:#fff;
+    transition: box-shadow .15s, border-color .15s;
+  }
 
-        .back-btn:hover {
-            color: #ff3d00;
-        }
-    </style>
+  input:focus, select:focus{
+    outline:none;
+    border-color: var(--bg2);
+    box-shadow: 0 6px 18px rgba(37,117,252,0.12);
+  }
+
+  .actions {
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:flex-end;
+    grid-column: 1 / -1;
+    margin-top:6px;
+  }
+
+  button.primary{
+    background: linear-gradient(90deg,var(--accent),var(--accent-hover));
+    color:white;
+    border:none;
+    padding:11px 18px;
+    border-radius:10px;
+    font-weight:700;
+    cursor:pointer;
+    font-size:15px;
+    min-width:160px;
+    box-shadow: 0 10px 25px rgba(255,122,89,0.18);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  button.primary:hover{ transform: translateY(-2px); box-shadow: 0 14px 30px rgba(255,122,89,0.22); }
+
+  button.ghost{
+    background: transparent;
+    color: #374151;
+    border: 1px solid #e6e9ef;
+    padding:10px 14px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+  }
+  button.ghost:hover{ background:#f8fafc; }
+
+  .aside {
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .meta {
+    padding:18px;
+    border-radius:10px;
+    background: linear-gradient(180deg,#fff,#fbfdff);
+    box-shadow:0 6px 18px rgba(10,11,15,0.06);
+    color:#0f172a;
+  }
+  .meta h3{ margin:0 0 8px; font-size:16px; }
+  .meta p{ margin:0; color:var(--muted); font-size:14px; line-height:1.4 }
+
+  .preview {
+    padding:16px;
+    border-radius:10px;
+    background: linear-gradient(180deg,#fafafa,#fff);
+    border: 1px solid #f1f5f9;
+    color:#0f172a;
+  }
+  .preview h4{ margin:0 0 6px; font-size:15px }
+  .preview .field{ font-size:13px; color:#6b7280; margin-bottom:6px }
+
+  /* responsive */
+  @media (max-width:900px){
+    .wrapper{ grid-template-columns: 1fr; padding:22px; }
+    form{ grid-template-columns: 1fr; }
+    .actions{ justify-content:space-between; }
+  }
+</style>
 </head>
 <body>
-    <div class="form-container">
-        <h1>Adaugă Carte</h1>
-        <form action="adauga_carte.php" method="post">
-            <input type="text" name="titlu" placeholder="Titlu Carte" required>
-            <input type="text" name="autor" placeholder="Nume Autor" required>
-            <input type="text" name="editura" placeholder="Editură" required>
-            <input type="number" name="pagini" placeholder="Număr Pagini" required>
-            <input type="number" name="an_publicatie" placeholder="An Publicație" required>
-            <button type="submit" class="btn">Adaugă Carte</button>
-        </form>
-        <a href="dashboard.php" class="back-btn">⬅ Înapoi la Dashboard</a>
+
+  <div class="wrapper">
+    <div class="card">
+      <h2>Adaugă o carte nouă</h2>
+      <p class="lead">Completează detaliile cărții. Dacă autorul sau editura nu există, vor fi create automat.</p>
+
+      <form action="adauga_carte.php" method="POST" id="addBookForm" autocomplete="off">
+        <div class="full">
+          <label for="titlu">Titlu</label>
+          <input id="titlu" name="titlu" type="text" placeholder="Ex: Cartea viselor" required>
+        </div>
+
+        <div>
+          <label for="autor">Autor</label>
+          <input id="autor" name="autor" type="text" placeholder="Ex: Mircea Eliade" required>
+        </div>
+
+        <div>
+          <label for="editura">Editură</label>
+          <input id="editura" name="editura" type="text" placeholder="Ex: Humanitas" required>
+        </div>
+
+        <div>
+          <label for="pagini">Număr pagini</label>
+          <input id="pagini" name="pagini" type="number" min="1" placeholder="Ex: 250" required>
+        </div>
+
+        <div>
+          <label for="an_publicatie">An publicare</label>
+          <input id="an_publicatie" name="an_publicatie" type="number" min="1000" max="2099" placeholder="Ex: 2020" required>
+        </div>
+
+        <div class="full actions">
+          <button type="button" class="ghost" onclick="location.href='dashboard.php'">⬅ Înapoi la Dashboard</button>
+          <button type="submit" class="primary">Adaugă carte</button>
+        </div>
+      </form>
     </div>
+
+    <div class="aside">
+      <div class="meta">
+        <h3>Sfaturi</h3>
+        <p>Completează titlul exact şi autorul.</p>
+      </div>
+
+      <div class="preview" id="previewBox">
+        <h4>Previzualizare carte</h4>
+        <div class="field"><strong>Titlu:</strong> <span id="pv-titlu">—</span></div>
+        <div class="field"><strong>Autor:</strong> <span id="pv-autor">—</span></div>
+        <div class="field"><strong>Editură:</strong> <span id="pv-editura">—</span></div>
+        <div class="field"><strong>Pagini:</strong> <span id="pv-pagini">—</span></div>
+        <div class="field"><strong>An:</strong> <span id="pv-an">—</span></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const fields = ['titlu','autor','editura','pagini','an_publicatie'];
+  fields.forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.addEventListener('input', ()=>{
+      const pv = document.getElementById('pv-' + id.replace('an_publicatie','an'));
+      if(pv) pv.textContent = el.value || '—';
+    });
+  });
+
+  window.addEventListener('DOMContentLoaded', ()=>{
+    fields.forEach(id=>{
+      const el = document.getElementById(id);
+      if(el && el.value) {
+        const pv = document.getElementById('pv-' + id.replace('an_publicatie','an'));
+        if(pv) pv.textContent = el.value;
+      }
+    });
+  });
+</script>
 </body>
 </html>

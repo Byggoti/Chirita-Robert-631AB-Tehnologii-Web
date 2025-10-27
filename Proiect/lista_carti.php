@@ -1,154 +1,134 @@
 <?php
-$servername = "mariadb-container";
-$username = "root";
+$servername = "mariadb-container"; 
+$username = "root"; 
 $password = "admin"; 
-$dbname = "Biblioteca";
+$database = "Biblioteca";
 
-$conn = new mysqli($servername, $username, $password, $dbname, 3306);
-
+// conectare
+$conn = new mysqli($servername, $username, $password, $database, 3306);
 if ($conn->connect_error) {
-    die("Conexiune eșuată: " . $conn->connect_error);
+    die("Eroare conexiune: " . $conn->connect_error);
 }
 
-$sql = "SELECT titlu, autor, an, gen FROM carti";
-$result = $conn->query($sql);
-?>
+// interogare — extragem titlu, autor și editura
+$sql = "
+    SELECT c.titlu, a.nume AS autor, e.nume AS editura, c.an_publicatie
+    FROM Carti c
+    JOIN Autori a ON c.id_autor = a.id
+    JOIN Editura e ON c.id_editura = e.id
+    ORDER BY c.titlu ASC
+";
 
+$result = $conn->query($sql);
+$carti = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $carti[] = $row;
+    }
+}
+
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista Cărți - Biblioteca</title>
+    <title>Lista Cărților</title>
     <style>
-        * {
-            box-sizing: border-box;
+        body {
+            background: linear-gradient(135deg, #8e44ad, #3498db);
+            color: white;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
-            font-family: "Poppins", sans-serif;
         }
 
-        body {
-            background: linear-gradient(135deg, #8E2DE2, #4A00E0);
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        header {
-            width: 100%;
-            text-align: center;
-            padding: 25px;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px);
-        }
-
-        header h1 {
-            font-size: 28px;
-            font-weight: 600;
-        }
-
-        .book-list {
+        .container {
             width: 90%;
-            max-width: 800px;
-            margin-top: 30px;
+            max-width: 1000px;
+            margin: 50px auto;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 30px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            margin-bottom: 25px;
+            letter-spacing: 1px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
+            color: white;
         }
 
         th, td {
-            text-align: left;
-            padding: 12px 10px;
+            padding: 12px 15px;
             border-bottom: 1px solid rgba(255,255,255,0.2);
+            text-align: left;
         }
 
         th {
-            color: #ffccff;
-            font-size: 18px;
+            background-color: rgba(0,0,0,0.3);
         }
 
         tr:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255,255,255,0.1);
+            transition: 0.2s;
         }
 
         .back-btn {
-            margin-top: 30px;
-            background: #ffcc00;
-            color: #333;
-            border: none;
-            padding: 12px 25px;
+            display: block;
+            width: fit-content;
+            margin: 25px auto 0;
+            background: #ff6b81;
+            color: white;
+            text-decoration: none;
+            padding: 10px 25px;
             border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 16px;
-            transition: all 0.3s ease;
+            transition: 0.3s;
         }
 
         .back-btn:hover {
-            background: #ff9900;
-        }
-
-        footer {
-            margin-top: auto;
-            padding: 20px;
-            font-size: 14px;
-            color: rgba(255,255,255,0.8);
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 20px;
-            font-size: 18px;
-            color: #ffcccc;
+            background: #ff4757;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <h1>📚 Lista Cărților din Bibliotecă</h1>
 
-    <header>
-        <h1>📚 Lista Cărților Disponibile</h1>
-    </header>
-
-    <div class="book-list">
+        <?php if (count($carti) > 0): ?>
         <table>
-            <tr>
-                <th>Titlu</th>
-                <th>Autor</th>
-                <th>An</th>
-                <th>Gen</th>
-            </tr>
-            <?php
-            if ($result && $result->num_rows > 0) {
-                while($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($row["titlu"]) . "</td>";
-                    echo "<td>" . htmlspecialchars($row["autor"]) . "</td>";
-                    echo "<td>" . htmlspecialchars($row["an"]) . "</td>";
-                    echo "<td>" . htmlspecialchars($row["gen"]) . "</td>";
-                    echo "</tr>";
-                }
-            } else {
-                echo "<tr><td colspan='4' class='no-data'>Nicio carte găsită în baza de date.</td></tr>";
-            }
-            $conn->close();
-            ?>
+            <thead>
+                <tr>
+                    <th>Titlu</th>
+                    <th>Autor</th>
+                    <th>Editură</th>
+                    <th>An Publicație</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($carti as $carte): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($carte['titlu']) ?></td>
+                        <td><?= htmlspecialchars($carte['autor']) ?></td>
+                        <td><?= htmlspecialchars($carte['editura']) ?></td>
+                        <td><?= htmlspecialchars($carte['an_publicatie']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
         </table>
+        <?php else: ?>
+            <p style="text-align:center;">⚠️ Nu există cărți în baza de date.</p>
+        <?php endif; ?>
+
+        <a href="dashboard.php" class="back-btn">⬅ Înapoi la Dashboard</a>
     </div>
-
-    <button class="back-btn" onclick="window.location.href='dashboard.html'">⬅ Înapoi la Dashboard</button>
-
-    <footer>
-        Biblioteca Virtuală © 2025
-    </footer>
-
 </body>
 </html>
