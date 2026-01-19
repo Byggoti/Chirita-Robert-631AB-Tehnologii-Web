@@ -1,16 +1,17 @@
 <?php
+// inceput cod php
 $servername = "mariadb-container"; 
 $username = "root"; 
 $password = "admin"; 
 $database = "Biblioteca";
 
-// conectare
+// conectare db
 $conn = new mysqli($servername, $username, $password, $database, 3306);
 if ($conn->connect_error) {
-    die("Eroare conexiune: " . $conn->connect_error);
+    die("eroare conexiune " . $conn->connect_error);
 }
 
-// interogare — extragem titlu, autor și editura
+// interogare selectare carti
 $sql = "
     SELECT c.titlu, a.nume AS autor, e.nume AS editura, c.an_publicatie
     FROM Carti c
@@ -19,6 +20,7 @@ $sql = "
     ORDER BY c.titlu ASC
 ";
 
+// salvare rezultate
 $result = $conn->query($sql);
 $carti = [];
 if ($result && $result->num_rows > 0) {
@@ -27,7 +29,9 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
+// inchidere conexiune
 $conn->close();
+// sfarsit cod php
 ?>
 <!DOCTYPE html>
 <html lang="ro">
@@ -35,6 +39,7 @@ $conn->close();
     <meta charset="UTF-8">
     <title>Lista Cărților</title>
     <style>
+        /* inceput cod css */
         body {
             background: linear-gradient(135deg, #8e44ad, #3498db);
             color: white;
@@ -97,6 +102,7 @@ $conn->close();
         .back-btn:hover {
             background: #ff4757;
         }
+        /* sfarsit cod css */
     </style>
 </head>
 <body>

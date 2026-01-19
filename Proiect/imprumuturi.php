@@ -1,22 +1,26 @@
 <?php
+// inceput cod php
 $host = 'mariadb-container';
 $port = 3306;
 $user = 'root';
 $pass = 'admin';
 $dbname = 'Biblioteca';
 
+// conectare baza date
 $conn = new mysqli($host, $user, $pass, $dbname, $port);
 if ($conn->connect_error) {
-    die("Eroare conectare DB: " . $conn->connect_error);
+    die("eroare conexiune " . $conn->connect_error);
 }
 
+// stergere imprumut
 if (isset($_GET['delete'])) {
     $id = intval($_GET['delete']);
     $conn->query("DELETE FROM Imprumuturi WHERE id = $id");
-    echo "<script>alert('Împrumut șters cu succes!'); window.location.href='imprumuturi.php';</script>";
+    echo "<script>alert('imprumut sters'); window.location.href='imprumuturi.php';</script>";
     exit();
 }
 
+// adaugare imprumut nou
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $carte = $_POST['carte'] ?? '';
     $utilizator = $_POST['utilizator'] ?? '';
@@ -27,19 +31,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $sql = "INSERT INTO Imprumuturi (id_carte, id_persoana, data_imprumut, data_returnare)
                 VALUES ('$carte', '$utilizator', '$data_imprumut', '$data_returnare')";
         if ($conn->query($sql) === TRUE) {
-            echo "<script>alert('Împrumut adăugat cu succes!'); window.location.href='imprumuturi.php';</script>";
+            echo "<script>alert('imprumut adaugat'); window.location.href='imprumuturi.php';</script>";
             exit();
         } else {
-            echo "<script>alert('Eroare la adăugare împrumut: " . addslashes($conn->error) . "');</script>";
+            echo "<script>alert('eroare adaugare');</script>";
         }
     } else {
-        echo "<script>alert('Toate câmpurile sunt obligatorii!');</script>";
+        echo "<script>alert('completeaza tot');</script>";
     }
 }
 
+// preluare liste pentru select
 $carti = $conn->query("SELECT id, titlu FROM Carti ORDER BY titlu");
 $persoane = $conn->query("SELECT id, nume FROM Persoane ORDER BY nume");
 
+// selectare lista imprumuturi
 $sql = "
     SELECT i.id, c.titlu AS carte, p.nume AS persoana, i.data_imprumut, i.data_returnare
     FROM Imprumuturi i
@@ -48,7 +54,9 @@ $sql = "
     ORDER BY i.data_imprumut DESC
 ";
 $imprumuturi = $conn->query($sql);
+// sfarsit cod php
 ?>
+
 <!DOCTYPE html>
 <html lang="ro">
 <head>
@@ -56,6 +64,7 @@ $imprumuturi = $conn->query($sql);
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>Gestionare Împrumuturi</title>
 <style>
+/* inceput cod css */
 :root {
   --violet: #6a11cb;
   --blue: #2575fc;
@@ -167,7 +176,7 @@ a.delete:hover {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-/* popup */
+/* stil popup confirmare */
 .popup {
   display:none;
   position:fixed;
@@ -213,6 +222,7 @@ a.delete:hover {
   from {opacity:0; transform:scale(0.9);}
   to {opacity:1; transform:scale(1);}
 }
+/* sfarsit cod css */
 </style>
 </head>
 <body>
@@ -281,13 +291,14 @@ a.delete:hover {
 </div>
 
 <script>
+// inceput cod javascript
 const rows = document.querySelectorAll("#loanTable tr");
 const popup = document.getElementById('confirmPopup');
 const confirmBtn = popup.querySelector('.confirm');
 const cancelBtn = popup.querySelector('.cancel');
 let selectedId = null;
 
-// colorare împrumuturi expirate
+// evidentiere intarzieri
 rows.forEach(r=>{
   const tds = r.querySelectorAll("td");
   if(tds.length>0){
@@ -300,6 +311,7 @@ rows.forEach(r=>{
   }
 });
 
+// deschidere confirmare
 document.querySelectorAll(".delete-btn").forEach(btn=>{
   btn.addEventListener("click", e=>{
     e.preventDefault();
@@ -311,6 +323,8 @@ cancelBtn.addEventListener("click",()=>{
   popup.style.display='none';
   selectedId=null;
 });
+
+// actiune stergere
 confirmBtn.addEventListener("click",()=>{
   if(selectedId){
     const row = document.querySelector(`tr[data-id="${selectedId}"]`);
@@ -319,7 +333,11 @@ confirmBtn.addEventListener("click",()=>{
     setTimeout(()=>{ window.location.href=`?delete=${selectedId}`; },400);
   }
 });
+// sfarsit cod javascript
 </script>
 </body>
 </html>
-<?php $conn->close(); ?>
+<?php 
+// inchidere conexiune finala
+$conn->close(); 
+?>
